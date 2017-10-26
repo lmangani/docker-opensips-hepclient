@@ -6,7 +6,7 @@ USER root
 RUN apt-get update && apt-get install -y sudo git make bison flex curl && \
     echo "mysql-server mysql-server/root_password password passwd" | sudo debconf-set-selections && \
     echo "mysql-server mysql-server/root_password_again password passwd" | sudo debconf-set-selections && \
-    apt-get install -y mysql-server libmysqlclient-dev libcurl4-gnutls-dev  \
+    apt-get install -y mysql-server libmysqlclient-dev libcurl3 libcurl3-dev \
                        libncurses5 libncurses5-dev mysql-client expect && \
     apt-get clean
 

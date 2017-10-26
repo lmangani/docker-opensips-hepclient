@@ -8,7 +8,7 @@ services:
       ADVERTISED_RANGE_FIRST: 20000
       ADVERTISED_RANGE_LAST: 20100
       HOMER_SERVER: '127.0.0.1'
-      HOMER_PORT: 9060
+      HOMER_PORT: 9063
     volumes:
        - /var/lib/mysql
        - /recording
