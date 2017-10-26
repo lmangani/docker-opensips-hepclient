@@ -3,17 +3,36 @@
 # OpenSIPS + HEP Types
 This repository provides a proof-of-concept OpenSIPS/RTPEngine/HEP contraption, capable of emitting several advanced **OpenSIPS HEP** Types to **HOMER**/**HEPIC**, not to be used for any production purpose what-so-ever.
 
+This container will act as a pass-through proxy and allow any destination such as your existing SIP PBX.
 
-<!--
+
 ### Quick Start
 Automated builds of the image are available on [DockerHub](https://hub.docker.com/r/qxip/homer-hepswitch)
 ```sh
 $ docker pull qxip/docker-opensips-hepclient
 ```
--->
 
 ### Usage
 Build or pull the image, and customize the settings, and use docker-compose to manage the container:
+```yaml
+version: '2'
+services:
+  opensips-hepclient:
+    image: qxip/docker-opensips-hepclient
+    privileged: true
+    restart: always
+    environment:
+      ADVERTISED_RANGE_FIRST: 20000
+      ADVERTISED_RANGE_LAST: 20100
+      HOMER_SERVER: '172.16.90.60'
+      HOMER_PORT: 9060
+    volumes:
+       - /var/lib/mysql
+    ports:
+      - "5060:5060/udp"
+      - "5061:5061/tcp"
+      - "20000-20100:20000-20100/udp"
+```
 ```sh
 $ docker-compose up
 ```
