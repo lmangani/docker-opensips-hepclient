@@ -12,6 +12,15 @@ $ docker pull qxip/docker-opensips-hepclient
 ```
 -->
 
+### Usage
+Build or pull the image, and customize the settings, and use docker-compose to manage the container:
+```sh
+$ docker-compose up
+```
+
+_NB: Call relay is enabled on this dev image, so all calls will be forwarded in proxy mode, and HEP logs sent to the configured ```$HOMER_SERVER```_
+
+
 ### Optional: Custom Build w/ RTPEngine kernel modules
 In order for RTPEngine to insert and use its kernel modules on a given system, the container must be built for the specific underlying OS kernel version. Please use the ```dev``` branch to produce a source-compiled build.
 ```
@@ -20,9 +29,3 @@ cd docker-opensips-hepclient
 docker build -t qxip/docker-opensips-hepclient .
 ```
 
-### Usage
-Use docker-compose to manage the container status
-```sh
-$ docker-compose up
-```
-Call relay is enabled on this dev image, so all calls will be forwarded in proxy mode, and HEP logs sent to the configured ```$HOMER_SERVER```
