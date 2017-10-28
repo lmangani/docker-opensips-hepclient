@@ -1,19 +1,17 @@
 version: '2'
 services:
-  opensips-hepclient:
-    image: qxip/docker-opensips-hepclient
+  opensips-tls-hepclient:
+    image: qxip/docker-opensips-tls-hep
     privileged: true
     restart: always
     environment:
-      ADVERTISED_RANGE_FIRST: 20000
-      ADVERTISED_RANGE_LAST: 20100
+      ADVERTISED_RANGE_FIRST: 21000
+      ADVERTISED_RANGE_LAST: 21100
       HOMER_SERVER: '127.0.0.1'
       HOMER_PORT: 9063
     volumes:
        - /var/lib/mysql
-       - /recording
     ports:
-      - "9060:9060/udp"
-      - "5060:5060/udp"
-      - "5061:5061/tcp"
-      - "20000-20100:20000-20100/udp"
+      - "5080:5060/udp"
+      - "5081:5061/tcp"
+      - "21000-21100:21000-21100/udp"
