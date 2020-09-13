@@ -1,5 +1,5 @@
 <img src="https://opensips.org/pub/opensips/logos/logo.png" width=400 align=left />
-<img src="https://user-images.githubusercontent.com/1423657/55069501-8348c400-5084-11e9-9931-fefe0f9874a7.png" width=200 align=right/>
+<img src="https://user-images.githubusercontent.com/1423657/55069501-8348c400-5084-11e9-9931-fefe0f9874a7.png" width=200 align=left/>
 
 # OpenSIPS 3.1 + HEP
 ### [SIP|REST|XLOG|MI] Types
@@ -57,9 +57,10 @@ The following key configuration elements control the new HEP features in OpenSIP
 
 ### Trace modules
 ```
-### Configure HEP Tracking for HOMER/HEPIC
+### Configure an HEP Endpoint
 loadmodule "proto_hep.so"
 modparam("proto_hep", "hep_id", "[hid]127.0.0.1:9060;transport=udp;version=3")
+#### Configure Tracer to use HEP Protocol 
 loadmodule "tracer.so"
 modparam("tracer", "trace_id", "[tid]uri=hep:hid")
 ```
