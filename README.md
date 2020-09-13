@@ -1,9 +1,10 @@
-<img src="https://avatars1.githubusercontent.com/u/3853758?v=4&s=100">
+<img src="https://avatars1.githubusercontent.com/u/3853758?v=4&s=200">
 
-# OpenSIPS 3.1 + [SIP|REST|XLOG|MI] Types
+# OpenSIPS 3.1 + HEP
+### [SIP|REST|XLOG|MI] Types
 This repository provides a proof-of-concept OpenSIPS/RTPEngine/HEP contraption, capable of emitting several advanced **OpenSIPS HEP** Types to **HOMER**/**HEPIC**, not to be used for any production purpose what-so-ever.
 
-This container will act as a pass-through proxy and allow any destination such as your existing SIP PBX.
+This container will act as an *insecure* pass-through proxy + relay and allow any destination such as your existing SIP PBX for testing and hacking.
 
 
 ### Quick Start
@@ -51,16 +52,15 @@ docker build -t qxip/docker-opensips-hepclient .
 ------------
 
 ## HEP Configuration
-The following key configuration elements control the new HEP features
+The following key configuration elements control the new HEP features in OpenSIPS 3.1
 
-### Tracing modules
+### Trace modules
 ```
+### Configure HEP Tracking for HOMER/HEPIC
 loadmodule "proto_hep.so"
 modparam("proto_hep", "hep_id", "[hid]127.0.0.1:9060;transport=udp;version=3")
-modparam("proto_hep", "homer5_on", 0)  # do JSON encapsulation
-
-loadmodule "siptrace.so"
-modparam("siptrace", "trace_id", "[tid]uri=hep:hid")
+loadmodule "tracer.so"
+modparam("tracer", "trace_id", "[tid]uri=hep:hid")
 ```
 
 ### HEP Route
@@ -85,13 +85,13 @@ route[to_homer] {
 	# do trace here
 	switch ($var(trace_type)) {
 	case "dialog":
-		sip_trace("$var(trace_id)", "d", "sip|xlog|rest");
+		trace("$var(trace_id)", "d", "sip|xlog|rest");
 		break;
 	case "transaction":
-		sip_trace("$var(trace_id)", "t", "sip|xlog");
+		trace("$var(trace_id)", "t", "sip|xlog");
 		break;
 	case "message":
-		sip_trace("$var(trace_id)", "m", "sip|xlog");
+		trace("$var(trace_id)", "m", "sip|xlog");
 		break;
 	}
 }
