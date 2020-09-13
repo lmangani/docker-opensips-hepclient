@@ -1,7 +1,7 @@
 version: '2'
 services:
   opensips-hepclient:
-    image: qxip/docker-opensips-hepclient
+    image: qxip/docker-opensips3-hepclient
     privileged: true
     restart: always
     environment:
@@ -11,8 +11,6 @@ services:
       HOMER_PORT: 9060
     volumes:
        - /var/lib/mysql
-       - /recording
-#       - ${PWD}/conf/opensips-hep.cfg:/usr/local/etc/opensips/opensips.cfg
     ports:
       - "5060:5060/udp"
       - "5061:5061/tcp"

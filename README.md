@@ -1,6 +1,6 @@
 <img src="https://avatars1.githubusercontent.com/u/3853758?v=4&s=100">
 
-# OpenSIPS 2.3 + [SIP|REST|XLOG|MI] Types
+# OpenSIPS 3.1 + [SIP|REST|XLOG|MI] Types
 This repository provides a proof-of-concept OpenSIPS/RTPEngine/HEP contraption, capable of emitting several advanced **OpenSIPS HEP** Types to **HOMER**/**HEPIC**, not to be used for any production purpose what-so-ever.
 
 This container will act as a pass-through proxy and allow any destination such as your existing SIP PBX.

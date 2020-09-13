@@ -47,28 +47,20 @@ sed -i "s/[hid]127.0.0.1:9060/[hid]${HOMER_SERVER}:${HOMER_PORT}/g" /usr/local/e
 
 
 # Prepare RTPEngine modules
-mkdir /lib/modules/$(uname -r)/updates
-cp -u /rtpengine/xt_RTPENGINE.ko "/lib/modules/$(uname -r)/updates/xt_RTPENGINE.ko"
-depmod -a
-modprobe xt_RTPENGINE
-mkdir /recording
+#mkdir /lib/modules/$(uname -r)/updates
+#cp -u /rtpengine/xt_RTPENGINE.ko "/lib/modules/$(uname -r)/updates/xt_RTPENGINE.ko"
+#depmod -a
+#modprobe xt_RTPENGINE
+#mkdir /recording
 # Starting RTPEngine process
-echo 'del 0' > /proc/rtpengine/control || true
-rtpengine-recording --config-file=/etc/rtpengine/rtpengine-recording.conf
-rtpengine -p /var/run/rtpengine.pid --interface=$HOST_IP!$ADVERTISED_IP -n 127.0.0.1:60000 -c 127.0.0.1:60001 -m $ADVERTISED_RANGE_FIRST -M $ADVERTISED_RANGE_LAST -E -L 7 \
-  --homer=${HOMER_SERVER}:${HOMER_PORT}--homer-protocol=udp --homer-id=8888 \
-  --recording-method=proc \
-  --recording-dir=/recording \
-  --table=0
+# echo 'del 0' > /proc/rtpengine/control || true
+# rtpengine-recording --config-file=/etc/rtpengine/rtpengine-recording.conf
+
+rtpengine -p /var/run/rtpengine.pid --interface=$HOST_IP!$ADVERTISED_IP -n 127.0.0.1:60000 -c 127.0.0.1:60001 -m $ADVERTISED_RANGE_FIRST -M $ADVERTISED_RANGE_LAST -E -L 6 \
+  --homer=${HOMER_SERVER}:${HOMER_PORT} --homer-protocol=udp --homer-id=8888 \
+#  --foreground true --log-stderr false \
+  --table=0 &
 
 # Starting OpenSIPS process
-/usr/local/sbin/opensips -c -FE
-/usr/local/sbin/opensipsctl start
-
-# cd /opt/RTPEngine-Speech2Text
-# sed -i "s/HEP_SERVER:.*/HEP_SERVER:\"${HOMER_SERVER}\",/g" config.js
-# sed -i "s/HEP_PORT:.*/HEP_PORT:${HOMER_PORT},/g" config.js
-# sed -i "s/subscriptionKey:.*/subscriptionKey:\"${BING_KEY}\"/g" config.js
-# nodejs speech2hep.js >> /var/log/syslog &
-
-rsyslogd -n
+/usr/local/sbin/opensips -c
+/usr/local/sbin/opensips -FE
