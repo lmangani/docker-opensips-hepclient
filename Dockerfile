@@ -3,7 +3,7 @@ MAINTAINER "Lorenzo Mangani <lorenzo.mangani@gmail.com>"
 
 USER root
 
-RUN apt-get update && apt-get install -y sudo git make bison flex curl libcurl3 libcurl3-dev && \
+RUN apt-get update && apt-get install -y sudo git make bison flex curl libcurl3 libcurl3-dev libssl-dev && \
     echo "mysql-server mysql-server/root_password password passwd" | sudo debconf-set-selections && \
     echo "mysql-server mysql-server/root_password_again password passwd" | sudo debconf-set-selections && \
     apt-get install -y mysql-server libmysqlclient-dev \
@@ -12,12 +12,13 @@ RUN apt-get update && apt-get install -y sudo git make bison flex curl libcurl3 
 
 RUN curl ipinfo.io/ip > /etc/public_ip.txt
 
-RUN git clone https://github.com/OpenSIPS/opensips.git -b 2.3 ~/opensips_2_3 && \
-    sed -i 's/db_http db_mysql db_oracle/db_http db_oracle/g' ~/opensips_2_3/Makefile.conf.template && \
-    sed -i 's/rabbitmq rest_client rls/rabbitmq rls/g' ~/opensips_2_3/Makefile.conf.template && \
-    cd ~/opensips_2_3 && \
+RUN git clone https://github.com/OpenSIPS/opensips.git -b 2.3 ~/opensips && \
+    sed -i 's/#define HEP_PROTO_TYPE_XLOG 0x056/#define HEP_PROTO_TYPE_XLOG 0x064/g'  ~/opensips/modules/proto_hep/hep.h && \
+    sed -i 's/db_http db_mysql db_oracle/db_http db_oracle/g' ~/opensips/Makefile.conf.template && \
+    sed -i 's/rabbitmq rest_client rls/rabbitmq rls/g' ~/opensips/Makefile.conf.template && \
+    cd ~/opensips && \
     make all && make prefix=/usr/local install && \
-    cd .. && rm -rf ~/opensips_2_3
+    cd .. && rm -rf ~/opensips
 
 COPY /rtpengine /rtpengine
 RUN export DEBIAN_FRONTEND=noninteractive && \

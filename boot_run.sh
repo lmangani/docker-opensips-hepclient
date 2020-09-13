@@ -3,16 +3,19 @@
 
 MYSQL_PWD=${MYSQL_PWD:-"passwd"}
 EXTERNAL_IP=$(cat /etc/public_ip.txt)
+#EXTERNAL_IP=$(ip route get 8.8.8.8 | awk '{print $NF; exit}')
 ADVERTISED_IP=${ADVERTISED_IP:-$EXTERNAL_IP}
 ADVERTISED_PORT=${ADVERTISED_PORT:-"5060"}
 ADVERTISED_RANGE_FIRST=${ADVERTISED_RANGE_FIRST:-"20000"}
 ADVERTISED_RANGE_LAST=${ADVERTISED_RANGE_LAST:-"20100"}
 WSS_PORT=${WSS_PORT:-"5061"}
-
-HOST_IP=$(ip route get 8.8.8.8 | awk '{print $NF; exit}')
+HOMER_SERVER=${HOMER_SERVER:-"de9.sipcapture.io"}
+HOMER_PORT=${HOMER_PORT:-"9060"}
+HOST_IP=$(ip route get 8.8.8.8 | head -n +1 | tr -s " " | cut -d " " -f 7)
 
 echo "Your IP : ${HOST_IP}"
 echo "Public IP : ${EXTERNAL_IP}"
+echo "HEP Backend : ${HOMER_SERVER}:${HOMER_PORT}"
 echo -e "Advertised IP:PORT : ${ADVERTISED_IP}:${ADVERTISED_PORT}\n\n"
 echo -e "Advertised RTP Range : ${ADVERTISED_RANGE_FIRST}-${ADVERTISED_RANGE_LAST}\n\n"
 
@@ -34,10 +37,13 @@ expect \"END\"
 
 # Configure opensips.cfg
 sed -i "s/advertised_address=.*/advertised_address=\"${ADVERTISED_IP}\"/g" /usr/local/etc/opensips/opensips.cfg
-sed -i "s/listen=udp.*/listen=udp:${HOST_IP}:${ADVERTISED_PORT}/g" /usr/local/etc/opensips/opensips.cfg
-sed -i "s/listen=ws.*/listen=ws:${HOST_IP}:${WSS_PORT}/g" /usr/local/etc/opensips/opensips.cfg
+#sed -i "s/listen=udp.*/listen=udp:${HOST_IP}:${ADVERTISED_PORT}/g" /usr/local/etc/opensips/opensips.cfg
+#sed -i "s/listen=tcp.*/listen=ws:${HOST_IP}:${ADVERTISED_PORT}/g" /usr/local/etc/opensips/opensips.cfg
+#sed -i "s/^listen=udp.*/listen=udp:${HOST_IP}:${ADVERTISED_PORT}/g" /etc/opensips/opensips.cfg
 # Configure HOMER target
 sed -i "s/127.0.0.1:9060/${HOMER_SERVER}:${HOMER_PORT}/g" /usr/local/etc/opensips/opensips.cfg
+sed -i "s/[hid]127.0.0.1:9060/[hid]${HOMER_SERVER}:${HOMER_PORT}/g" /usr/local/etc/opensips/opensips.cfg
+#sed -i "s/127.0.0.1:6090/${HOMER_SERVER}:${HOMER_PORT}/g" /usr/local/etc/opensips/opensips.cfg
 
 
 # Prepare RTPEngine modules
@@ -50,12 +56,13 @@ mkdir /recording
 echo 'del 0' > /proc/rtpengine/control || true
 rtpengine-recording --config-file=/etc/rtpengine/rtpengine-recording.conf
 rtpengine -p /var/run/rtpengine.pid --interface=$HOST_IP!$ADVERTISED_IP -n 127.0.0.1:60000 -c 127.0.0.1:60001 -m $ADVERTISED_RANGE_FIRST -M $ADVERTISED_RANGE_LAST -E -L 7 \
+  --homer=${HOMER_SERVER}:${HOMER_PORT}--homer-protocol=udp --homer-id=8888 \
   --recording-method=proc \
   --recording-dir=/recording \
   --table=0
 
 # Starting OpenSIPS process
-/usr/local/sbin/opensips -c
+/usr/local/sbin/opensips -c -FE
 /usr/local/sbin/opensipsctl start
 
 # cd /opt/RTPEngine-Speech2Text
