@@ -1,5 +1,4 @@
-<img src="https://user-images.githubusercontent.com/1423657/55069501-8348c400-5084-11e9-9931-fefe0f9874a7.png" width=200/>
-<img src="https://avatars1.githubusercontent.com/u/3853758?v=4&s=400">
+<img src="https://user-images.githubusercontent.com/1423657/55069501-8348c400-5084-11e9-9931-fefe0f9874a7.png" width=200 align=middle/><img src="https://opensips.org/pub/opensips/logos/logo.png" width=400 align=middle />
 
 # OpenSIPS 3.1 + HEP
 ### [SIP|REST|XLOG|MI] Types
