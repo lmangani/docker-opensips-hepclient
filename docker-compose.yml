@@ -1,7 +1,7 @@
 version: '2'
 services:
   opensips-hepclient:
-    image: qxip/docker-opensips3-hepclient
+    image: qxip/docker-opensips-hepclient
     privileged: true
     restart: always
     environment:
